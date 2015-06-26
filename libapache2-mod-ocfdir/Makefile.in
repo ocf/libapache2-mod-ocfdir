@@ -1,0 +1,33 @@
+APXS=@APXS@
+CPPFLAGS=@CPPFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ACTIVATE=@ACTIVATE@
+TARGET=.libs/mod_ocfdir.so
+
+$(TARGET): Makefile mod_ocfdir.c
+	$(APXS) -c $(CPPFLAGS) $(LDFLAGS) $(LIBS) mod_ocfdir.c
+
+install: $(TARGET)
+	$(APXS) -i -n ocfdir $(ACTIVATE) $(TARGET)
+
+clean:
+	rm -rf *.lo *.la *.slo *.so *.o .libs/ *~ core
+
+distclean: clean
+	rm -rf Makefile config.status config.cache config.log config.h autom4te.cache/
+
+configure: configure.in
+	autoconf
+
+config.status: configure
+	./config.status --recheck
+
+config.h.in: configure.in
+	autoheader
+
+config.h: config.h.in config.status
+	./config.status
+
+Makefile: Makefile.in config.status
+	./config.status

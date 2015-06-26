@@ -1,0 +1,50 @@
+AC_INIT(mod_ocfdir.c)
+
+AC_ARG_WITH(apxs,
+	[AS_HELP_STRING(
+		[--with-apxs],
+		[Path to Apache's apxs command (version 1.3.x or 2.0.x)]
+	)],
+	APXS=$withval)
+AC_ARG_WITH(activate,
+	[AS_HELP_STRING(
+		[--with-activate],
+		[Activate mod_ocfdir in httpd.conf]
+	)],
+	test "$withval" != no && ACTIVATE=-a
+)
+
+AC_PROG_CC
+dnl We need to reset CFLAGS after AC_PROG_CC sets it. apxs will provide
+dnl its own CFLAGS and gets confused when we try to feed ours to it.
+CFLAGS=
+
+if test -z "$APXS" || test "$APXS" = yes; then
+	APXS=apxs
+	for location in /usr/local/apache/bin/apxs \
+		/usr/local/apache2/bin/apxs /opt/csw/apache2/sbin/apxs; do
+
+		if test -e $location; then
+			APXS=$location
+		fi
+	done
+fi
+
+AC_MSG_CHECKING(whether apxs works)
+if $APXS -q CFLAGS >/dev/null; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+	AC_MSG_ERROR(Cannot build mod_ocfdir without a valid apxs program)
+fi
+
+
+AC_SUBST(APXS)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(LDFLAGS)
+AC_SUBST(LIBS)
+AC_SUBST(TLS)
+AC_SUBST(ACTIVATE)
+
+AC_CONFIG_HEADER(config.h)
+AC_OUTPUT(Makefile)

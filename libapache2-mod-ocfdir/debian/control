@@ -1,0 +1,11 @@
+Source: libapache2-mod-ocfdir
+Maintainer: Open Computing Facility <help@ocf.berkeley.edu>
+Section: httpd
+Priority: optional
+Standards-Version: 3.9.6
+Build-Depends: debhelper (>= 7), dh-apache2, apache2-dev, chrpath
+
+Package: libapache2-mod-ocfdir
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Fork of mod_userdir to support OCF's directory structure
